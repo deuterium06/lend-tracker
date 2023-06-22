@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lend Tracker - Home</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <!-- Create a div with Jinja for loop for table with columns: id, item, borrower, date_borrowed, date_returned. Add a table header "Lend Tracker" -->
+    <div>
+        <h1>Lend Tracker</h1>
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Item</th>
+                <th>Borrower</th>
+                <th>Borrowed</th>
+                <th>Returned</th>
+            </tr>
+            {% for row in lends %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.item }}</td>
+                <td>{{ row.borrower }}</td>
+                <td>{{ row.date_borrowed }}</td>
+                <td>{{ row.date_returned }}</td>
+                <td><a href="/update/{{ row.id }}">Update</a></td>
+                <td><a href="/delete/{{ row.id }}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <!-- Create a div for submit form with input fields: item, borrower. Add a submit button "Add Item" -->
+    <div>
+        <h3>Add Item</h3>
+        <form action="/" method="post">
+            <label for="item">Item</label>
+            <input type="text" id="item" name="item">
+            <label for="borrower">Borrower</label>
+            <input type="text" id="borrower" name="borrower">
+            <input type="submit" value="Add Item">
+        </form>
+    </div>
+</body>
+</html>

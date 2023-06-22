@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lend Tracker - Update</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Create a submit form for update with input fields: item, borrower. Add a checkbox "is_returned". Add a submit button "Update Item" -->
+    <div>
+        <h3>Update Item</h3>
+        <form action="/update/{{ lend.id }}" method="post">
+            <label for="item">Item</label>
+            <input type="text" id="item" name="item" value="{{ lend.item }}">
+            <label for="borrower">Borrower</label>
+            <input type="text" id="borrower" name="borrower" value="{{ lend.borrower }}">
+            <label for="is_returned">Is Returned</label>
+            <input type="checkbox" id="is_returned" name="is_returned">
+            <input type="submit" value="Update Item">
+        </form>
+</body>
+</html>
