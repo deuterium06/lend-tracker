@@ -23,12 +23,26 @@ db = SQLAlchemy(app)
 class Lend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item = db.Column(db.String(200), nullable=False)
-    borrower = db.Column(db.String(200), nullable=False)
+    # Add borrower_id column as a foreign key
+    borrower_id = db.Column(db.Integer, db.ForeignKey('borrower.borrower_id'), nullable=False)
     date_borrowed = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_returned = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
         return '<Lend %r>' % self.id
+
+# Creating the database model for borrower
+class Borrower(db.Model):
+    borrower_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    phone = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(200), nullable=False)
+
+    # Add a relationship to Lend table
+    lends = db.relationship('Lend', backref='borrower', lazy=True)
+
+    def __repr__(self):
+        return '<Borrower %r>' % self.borrower_id
 
 with app.app_context():
     db.create_all()
@@ -38,8 +52,8 @@ with app.app_context():
 def index():
     if request.method == 'POST':
         item = request.form['item']
-        borrower = request.form['borrower']
-        lend = Lend(item=item, borrower=borrower)
+        borrower_id = request.form['borrower']
+        lend = Lend(item=item, borrower_id=borrower_id)
 
         try:
             db.session.add(lend)
@@ -48,15 +62,16 @@ def index():
         except:
             return 'There was an issue adding your lend'
     else:
-        lends = Lend.query.order_by(desc(Lend.date_borrowed)).all()
+        #Create a lend query with join in order to get the borrower name
+        lends = Lend.query\
+            .join(Borrower, Lend.borrower_id==Borrower.borrower_id)\
+            .add_columns(Lend.id, Lend.item, Lend.borrower_id, Borrower.name, Lend.date_borrowed, Lend.date_returned)\
+            .order_by(desc(Lend.date_borrowed))\
+            .all()\
+
+        borrowers = Borrower.query.all()
         
-        #Format date & time
-        for lend in lends:
-            lend.date_borrowed = lend.date_borrowed.strftime('%d/%m/%Y %H:%M')
-            if lend.date_returned:
-                lend.date_returned = lend.date_returned.strftime('%d/%m/%Y %H:%M')
-        
-        return render_template('index.html', lends=lends)
+        return render_template('index.html', lends=lends, borrowers=borrowers)
 
 # Creating the update page
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
@@ -65,7 +80,6 @@ def update(id):
 
     if request.method == 'POST':
         lend.item = request.form['item']
-        lend.borrower = request.form['borrower']
         date_returned = request.form.get('is_returned')
 
         if date_returned == 'on':
@@ -90,6 +104,33 @@ def delete(id):
         return redirect('/')
     except:
         return 'There was an issue deleting your lend'
+
+# Creating the borrower page
+@app.route('/new_borrower', methods=['GET', 'POST'])
+def new_borrower():
+    if request.method == 'POST':
+        name = request.form['name']
+        phone = request.form['phone']
+        email = request.form['email']
+
+        borrower = Borrower(name=name, phone=phone, email=email)
+
+        try:
+            db.session.add(borrower)
+            db.session.commit()
+            return redirect('/')
+        except:
+            return 'There was an issue adding your borrower'
+    else:
+        return render_template('new_borrower.html')
+
+# Creating the borrower details page
+@app.route('/borrower_details/<int:id>')
+def borrower_details(id):
+    lends = Lend.query.filter_by(borrower_id=id).order_by(desc(Lend.date_borrowed)).all()
+    borrower = Borrower.query.get_or_404(id)
+
+    return render_template('borrower_details.html', lends=lends, borrower=borrower)
 
 # Running the app
 if __name__ == '__main__':

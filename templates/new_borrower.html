@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lend Tracker - New Borrower</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div>
+        <h3>Add Borrower</h3>
+        <form action="/new_borrower" method="post">
+            <table>
+            <tr>
+                <td><label for="name">Name</label></td>
+                <td><input type="text" id="name" name="name" placeholder="First Name L." required></td>
+            </tr>
+            <tr>
+                <td><label for="email">Email</label></td>
+                <td><input type="email" id="email" name="email" required></td>
+            </tr>
+            <tr>
+                <td><label for="phone">Phone</label></td>
+                <td><input type="tel" id="phone" name="phone" placeholder="XXX-XXXX" required></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Add Borrower"></td>
+            </tr>
+            </table>
+        </form>
+</body>
+</html>

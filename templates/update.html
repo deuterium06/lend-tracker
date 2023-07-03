@@ -11,13 +11,21 @@
     <div>
         <h3>Update Item</h3>
         <form action="/update/{{ lend.id }}" method="post">
-            <label for="item">Item</label>
-            <input type="text" id="item" name="item" value="{{ lend.item }}">
-            <label for="borrower">Borrower</label>
-            <input type="text" id="borrower" name="borrower" value="{{ lend.borrower }}">
-            <label for="is_returned">Is Returned</label>
-            <input type="checkbox" id="is_returned" name="is_returned">
-            <input type="submit" value="Update Item">
+            <table>
+                <tr>
+                    <td><label for="item">Item</label></td>
+                    <td><input type="text" id="item" name="item" value="{{ lend.item }}"></td>
+                </tr>
+                <tr>
+                    <td><label for="is_returned">Is Returned</label></td>
+                    <td><input type="checkbox" id="is_returned" name="is_returned"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Update Item"></td>
+                </tr>
+            </table>    
         </form>
+    </div>
 </body>
 </html>

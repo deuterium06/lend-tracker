@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lend Tracker - Borrower Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div>
+        <h3>Borrower Details</h3>
+        <p>Name: {{ borrower.name }}</p>
+        <p>Email: {{ borrower.email }}</p>
+        <p>Phone: {{ borrower.phone }}</p>
+        
+        <h3>Recent Transactions</h3>
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Item</th>
+                <th>Borrowed</th>
+                <th>Returned</th>
+            </tr>
+            {% for row in lends %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.item }}</td>
+                <td>{{ row.date_borrowed.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ row.date_returned.strftime('%d/%m/%Y %H:%M') if row.date_returned else ""}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</body>
+</html>

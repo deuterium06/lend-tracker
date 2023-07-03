@@ -22,9 +22,9 @@
             <tr>
                 <td>{{ row.id }}</td>
                 <td>{{ row.item }}</td>
-                <td>{{ row.borrower }}</td>
-                <td>{{ row.date_borrowed }}</td>
-                <td>{{ row.date_returned }}</td>
+                <td><a href="/borrower_details/{{ row.borrower_id }}">{{ row.name }}</a></td>
+                <td>{{ row.date_borrowed.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ row.date_returned.strftime('%d/%m/%Y %H:%M') if row.date_returned else ""}}</td>
                 <td><a href="/update/{{ row.id }}">Update</a></td>
                 <td><a href="/delete/{{ row.id }}">Delete</a></td>
             </tr>
@@ -34,13 +34,30 @@
     <!-- Create a div for submit form with input fields: item, borrower. Add a submit button "Add Item" -->
     <div>
         <h3>Add Item</h3>
+        <p>User not in the Borrower option? Create new <a href="/new_borrower">here.</a></p>
         <form action="/" method="post">
-            <label for="item">Item</label>
-            <input type="text" id="item" name="item">
-            <label for="borrower">Borrower</label>
-            <input type="text" id="borrower" name="borrower">
-            <input type="submit" value="Add Item">
+            <table>
+            <tr>
+                <td><label for="item">Item</label></td>
+                <td><input type="text" id="item" name="item" placeholder="Item Name"></td>
+            </tr>
+            <tr>
+                <td><label for="borrower">Borrower</label></td>
+                <!-- Create a drop down list for borrowers with Jinja for loop -->
+                <td><select name="borrower" id="borrower" required>
+                    {% for row in borrowers %}
+                    <option value="{{ row.borrower_id }}">{{ row.name }}</option>
+                    {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Add Item"></td>
+            </tr>
+            </table>
         </form>
+
     </div>
 </body>
 </html>
